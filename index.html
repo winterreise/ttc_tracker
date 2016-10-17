@@ -1,0 +1,34 @@
+<html>
+  <head>
+    <title>River City TTC Helper</title>
+  </head>
+  <body>
+    <div id="Schedule">
+
+    </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+    <script>
+    $(document).ready(function() {
+
+      function getSchedule() {
+        $.ajax({
+          url: 'http://webservices.nextbus.com/service/publicXMLFeed?command=predictionsForMultiStops&a=ttc&stops=501|1301&stops=501|10272&stops=504|15142&stops=504|1159',
+          method: 'GET'
+        }).done(function(xml) {
+          $('#Schedule').empty();
+          var $xml = $(xml);
+          $xml.find('direction').each(function() {
+            var $direction = $(this);
+            var title = $direction.attr('title');
+            var minutes = $direction.children().first().attr('minutes');
+            $('#Schedule').append('<p>' + title + ' is coming in ' + minutes + ' minute(s)</p>');
+          });
+        });
+      }
+      getSchedule();
+      setInterval(getSchedule, 60000);
+    });
+    </script>
+  </body>
+</html>
